@@ -1,0 +1,8 @@
+# Enable CodeRabbit auto-reviews on all branches
+reviews:
+  auto_review:
+    enabled: true
+  review_status: false
+  branches:
+    include:
+      - "*"
