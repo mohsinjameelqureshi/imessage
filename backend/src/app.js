@@ -6,6 +6,7 @@ import { ApiError } from "./utils/apiError.js";
 import fs from "fs";
 import path from "path";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -34,6 +35,8 @@ const publicDir = path.join(process.cwd(), "public");
 // heathcheck
 import healthCheckRouter from "./routes/healthcheck.routes.js";
 app.use("/api/healthcheck", healthCheckRouter);
+
+app.use("/api/auth", authRoutes);
 
 //  if the public directory exists, serve the static files
 if (fs.existsSync(publicDir)) {
