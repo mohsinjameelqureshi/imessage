@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { verifyWebhook } from "@clerk/backend/webhooks";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
 
 const router = express.Router();
 
@@ -12,9 +13,7 @@ router.post(
     const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
     if (!signingSecret) {
-      res
-        .status(200)
-        .json(new ApiResponse(200, "Webhook secret is not provided"));
+      res.status(500).json(new ApiError(500, "Webhook secret is not provided"));
     }
 
     // clerk's verifier expects a web request with the raw body; express.raw gives a buffer
