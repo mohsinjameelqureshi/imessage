@@ -94,22 +94,48 @@ const getMessages = asyncHandler(async (req, res) => {
 });
 
 const sendMessage = asyncHandler(async (req, res) => {
-  //   const { text } = req.body;
-  //   const { id: receiverId } = req.params;
-  //   const senderId = req.user?._id;
-  //   let imageUrl;
-  //   let videoUrl;
-  //   if (req.file) {
-  //     if (!hasImagekitConfig()) {
-  //       throw new ApiError(500, "Media upload is not configured");
-  //     }
-  //     const url = await uploadChatMedia(req.file);
-  //     if (req.file.mimetype.startsWith("video/")) {
-  //       videoUrl = url;
-  //     } else {
-  //       imageUrl = url;
-  //     }
-  //   }
+  const { text } = req.body;
+  const { id: receiverId } = req.params;
+  const senderId = req.user?._id;
+
+  const receiver = await User.findById(receiverId);
+
+  if (!receiver) {
+    throw new ApiError(404, "Receiver not found");
+  }
+
+  if (!text?.trim() && !req.file) {
+    throw new ApiError(400, "Message text or media is required");
+  }
+
+  let imageUrl;
+  let videoUrl;
+  if (req.file) {
+    if (!hasImagekitConfig()) {
+      throw new ApiError(500, "Media upload is not configured");
+    }
+    const url = await uploadChatMedia(req.file);
+    if (req.file.mimetype.startsWith("video/")) {
+      videoUrl = url;
+    } else {
+      imageUrl = url;
+    }
+  }
+
+  const newMessage = new Message({
+    senderId,
+    receiverId,
+    text,
+    image: imageUrl,
+    video: videoUrl,
+  });
+
+  await newMessage.save();
+
+  // todo: realtime with socket.io
+  res
+    .status(201)
+    .json(new ApiResponse(201, newMessage, "message send successfully"));
 });
 
 export {
