@@ -3,7 +3,7 @@ import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 
-const protectRoute = asyncHandler(async (req, resizeBy, next) => {
+const protectRoute = asyncHandler(async (req, res, next) => {
   try {
     const { userId } = getAuth(req);
 

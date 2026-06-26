@@ -7,6 +7,8 @@ import fs from "fs";
 import path from "path";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
 import authRoutes from "./routes/auth.routes.js";
+import healthCheckRouter from "./routes/healthcheck.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 
 const app = express();
 
@@ -32,11 +34,17 @@ app.use(clerkMiddleware());
 
 const publicDir = path.join(process.cwd(), "public");
 
+//-------------------------------------------------------------------------------------------------//
 // heathcheck
-import healthCheckRouter from "./routes/healthcheck.routes.js";
 app.use("/api/healthcheck", healthCheckRouter);
 
+// check auth
 app.use("/api/auth", authRoutes);
+
+// message routes
+app.use("/api/messages", messageRoutes);
+
+//----------------------------------------------------------------------------------------------------//
 
 //  if the public directory exists, serve the static files
 if (fs.existsSync(publicDir)) {
