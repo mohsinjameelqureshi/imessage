@@ -9,8 +9,7 @@ import clerkWebhook from "./webhooks/clerk.webhook.js";
 import authRoutes from "./routes/auth.routes.js";
 import healthCheckRouter from "./routes/healthcheck.routes.js";
 import messageRoutes from "./routes/message.routes.js";
-
-const app = express();
+import { app } from "./lib/socket.js";
 
 app.use(
   cors({
@@ -73,5 +72,3 @@ app.use((err, req, res, next) => {
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 });
-
-export { app };

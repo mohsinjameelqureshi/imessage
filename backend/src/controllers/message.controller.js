@@ -1,4 +1,5 @@
 import { hasImagekitConfig, uploadChatMedia } from "../lib/imagekit.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import { upload } from "../middlewares/upload.middleware.js";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
@@ -132,7 +133,15 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   await newMessage.save();
 
-  // todo: realtime with socket.io
+  const receiverSocketId = getReceiverSocketId(receiverId);
+
+  // they will get the socketId of receiver if the receiver is online
+
+  // only send message if the receiver is online
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("newMessage", newMessage);
+  }
+
   res
     .status(201)
     .json(new ApiResponse(201, newMessage, "message send successfully"));
