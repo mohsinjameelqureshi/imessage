@@ -17,7 +17,10 @@ function App() {
               isSignedIn ? <ChatPage /> : <Navigate to={"/auth"} replace />
             }
           />
-          <Route path="/auth" element={!isSignedIn?<AuthPage />:<Navigate to={"/"} replace} />
+          <Route
+            path="/auth"
+            element={!isSignedIn ? <AuthPage /> : <Navigate to={"/"} replace />}
+          />
         </Routes>
       </WallpaperProvider>
     </ThemeProvider>
